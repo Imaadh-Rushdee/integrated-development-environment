@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>My IDE</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #1e1e1e;
+            color: white;
+            font-family: monospace;
+        }
+
+        .CodeMirror {
+            height: calc(100vh - 240px);
+            font-size: 14px;
+        }
+
+        #terminal {
+            background: #000;
+            color: #0f0;
+            padding: 12px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        #app {
+            display: flex;
+            height: 100vh;
+        }
+
+        #sidebar {
+            width: 220px;
+            background: #252526;
+            color: #ccc;
+            border-right: 1px solid #333;
+        }
+
+        #sidebar-header {
+            padding: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #file-list li {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        #file-list li:hover {
+            background: #373737;
+        }
+
+        #main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #toolbar {
+            padding: 6px;
+            background: #2d2d2d;
+        }
+
+        .CodeMirror {
+            flex: 1;
+        }
+
+        #terminal {
+            height: 180px;
+        }
+
+        .selected {
+            background: #094771;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar">
+            <div id="sidebar-header">
+                <span>📁 Project</span>
+                <div>
+                    <button onclick="newFile()">📄</button>
+                    <button onclick="newFolder()">📁</button>
+
+                </div>
+            </div>
+
+            <ul id="file-list"></ul>
+        </div>
+
+        <div id="main">
+            <div id="toolbar">
+                <button onclick="saveFile()">💾 Save</button>
+                <button onclick="runCode()">▶ Run</button>
+            </div>
+
+            <textarea id="editor"></textarea>
+            <pre id="terminal"></pre>
+        </div>
+    </div>
+
+
+    <!-- CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5/lib/codemirror.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5/mode/python/python.js"></script>
+
+    <!-- Your JS LAST -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
