@@ -130,3 +130,92 @@ def delete_node(id):
     conn.close()
 
     return jsonify({"status": "deleted"})
+
+import subprocess
+import tempfile
+import os
+
+# ---------------------------
+# 💻 Terminal Execute
+# ---------------------------
+@api.route("/terminal/execute", methods=["POST"])
+def terminal_execute():
+    command = request.json.get("command", "").strip()
+
+    if command == "ls":
+        return list_files()
+
+    if command.startswith("cat "):
+        return cat_file(command[4:])
+
+    if command.startswith("run "):
+        return run_file(command[4:])
+
+    return jsonify({"output": "Unknown command"})
+
+
+def list_files():
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT name FROM nodes WHERE type='file'")
+    files = [row["name"] for row in cur.fetchall()]
+    conn.close()
+
+    return jsonify({"output": "\n".join(files)})
+
+
+def cat_file(filename):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT content FROM nodes WHERE name=? AND type='file'",
+        (filename,)
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    if not row:
+        return jsonify({"output": "File not found"})
+
+    return jsonify({"output": row["content"]})
+
+
+def run_file(filename):
+    ext = filename.split(".")[-1]
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT content FROM nodes WHERE name=? AND type='file'",
+        (filename,)
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    if not row:
+        return jsonify({"output": "File not found"})
+
+    code = row["content"]
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix="." + ext) as f:
+        f.write(code.encode())
+        filepath = f.name
+
+    try:
+        if ext == "py":
+            result = subprocess.run(
+                ["python", filepath],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+        else:
+            return jsonify({"output": f"No runner for .{ext} yet"})
+
+        output = result.stdout + result.stderr
+    finally:
+        os.remove(filepath)
+
+    return jsonify({"output": output or "No output"})

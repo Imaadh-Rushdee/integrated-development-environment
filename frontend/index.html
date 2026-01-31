@@ -85,6 +85,35 @@
         .selected {
             background: #094771;
         }
+
+        #terminal {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            height: 180px;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        #terminal-input-line {
+            display: flex;
+        }
+
+        #terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #0f0;
+            outline: none;
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -110,7 +139,15 @@
             </div>
 
             <textarea id="editor"></textarea>
-            <pre id="terminal"></pre>
+            <!-- TERMINAL -->
+            <div id="terminal">
+                <div id="terminal-output"></div>
+                <div id="terminal-input-line">
+                    <span>$</span>
+                    <input id="terminal-input" autocomplete="off" />
+                </div>
+            </div>
+
         </div>
     </div>
 
